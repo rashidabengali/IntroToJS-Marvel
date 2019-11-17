@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import request from './data/captain.json';
 import Item from './Item';
+import Collapser from './Collapser';
 
 // Commented out as this code needed for a working Marvel API
 //const apiKey = '4349118c475b4f8fc68c3a2f780946b5';
@@ -17,15 +18,13 @@ class Search extends Component {
       results: null,
       query: "",
       loading: false,
-      highlight: false,
-      collapse: true,
+      highlight: false
     }
     this.search = this.search.bind(this);
     this.saveQuery = this.saveQuery.bind(this);
     this.update = this.update.bind(this);
     this.toggleHighlight = this.toggleHighlight.bind(this);
     this.update = this.update.bind(this);
-    this.collapseBlock = this.collapseBlock.bind(this);
   }
 
   toggleHighlight() {
@@ -104,59 +103,57 @@ class Search extends Component {
     )
   }
 
-  collapseBlock(){
-    this.setState((oldState) => ({collapse: !oldState.collapse}));
+  renderSearch(){
+    return(
+      <div className="col-lg-12">
+      <form className="bs-component" onSubmit={this.search}>
+        <div className="form-row">
+          <div className="col-sm-8">
+            <input
+              className="form-control form-control-lg"
+              onChange={this.saveQuery}
+              placeholder="Search for Character by Name"
+              data-testid="search"
+              type="text" required/>
+          </div>
+          <div className="col-sm-2">
+            <div className="custom-control custom-checkbox">
+                  <input type="checkbox" className="custom-control-input" id="customCheck1" onChange={this.toggleHighlight} />
+                  <label className="custom-control-label" htmlFor="customCheck1">Extended</label>
+            </div>
+          </div>
+          <div className="col-sm-2">
+            <button className="btn btn-primary btn-lg" data-testid="searchBtn">Search</button>
+          </div>
+        </div>
+      </form>
+      {this.state.loading
+        ? <div className="col-lg-12">
+          <div className="bs-component">
+            <div className="progress">
+              <div className="progress-bar progress-bar-striped progress-bar-animated"
+                data-testid="searchRes"
+                role="progressbar"
+                aria-valuenow="75"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                style={{ width: "75%" }}>
+                Loading...
+              </div>
+            </div>
+          </div>
+        </div>
+        : this.renderResults() }
+      </div>
+    )
   }
 
   render() {
     return (
-      <div className={this.state.collapse? "open row": "closed row"} data-testid="collapse-block">
-        <button type="button"
-          className="btn btn-danger"
-          onClick={this.collapseBlock}
-          data-testid="collapse-button">
-        </button>
-        <div className="col-lg-12">
-        <form className="bs-component" onSubmit={this.search}>
-          <div className="form-row">
-            <div className="col-sm-8">
-              <input
-                className="form-control form-control-lg"
-                onChange={this.saveQuery}
-                placeholder="Search for Character by Name"
-                data-testid="search"
-                type="text" required/>
-            </div>
-            <div className="col-sm-2">
-              <div className="custom-control custom-checkbox">
-                    <input type="checkbox" className="custom-control-input" id="customCheck1" onChange={this.toggleHighlight} />
-                    <label className="custom-control-label" htmlFor="customCheck1">Extended</label>
-              </div>
-            </div>
-            <div className="col-sm-2">
-              <button className="btn btn-primary btn-lg" data-testid="searchBtn">Search</button>
-            </div>
-          </div>
-        </form>
-        {this.state.loading
-          ? <div className="col-lg-12">
-            <div className="bs-component">
-              <div className="progress">
-                <div className="progress-bar progress-bar-striped progress-bar-animated"
-                  data-testid="searchRes"
-                  role="progressbar"
-                  aria-valuenow="75"
-                  aria-valuemin="0"
-                  aria-valuemax="100"
-                  style={{ width: "75%" }}>
-                  Loading...
-                </div>
-              </div>
-            </div>
-          </div>
-          : this.renderResults() }
-        </div>
-      </div>
+      this.state.collapsed ?
+        <div className="row"><h3>Summary</h3></div>
+        :
+        this.renderSearch()
     );
   }
 }

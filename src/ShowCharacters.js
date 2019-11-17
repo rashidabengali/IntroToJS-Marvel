@@ -1,5 +1,52 @@
 import React, { Component } from 'react';
+import usePlaceholder from './usePlaceholder'
+import logo from './logo.svg';
 const groupSize = 3;
+
+// function withPlaceHolder(ImageComp) {
+//   return class extends Component {
+//     constructor(props) {
+//       super(props)
+//       this.state = {
+//         loaded: false
+//       }
+//     }
+//
+//     componentDidMount() {
+//       const img = new Image();
+//       img.src = this.props.src;
+//       img.onload = () => {
+//         this.setState( {
+//           loaded: true
+//         })
+//       }
+//     }
+//
+//     render() {
+//       const {src, ...other} = this.props;
+//       let url = this.state.loaded? src : logo
+//       return (
+//         <ImageComp src={url} {...other} />
+//       )
+//     }
+//   }
+// }
+
+const Img = ({name, src}) => {
+  const url = usePlaceholder(src);
+  return (
+
+    <img
+      style={{maxWidth: "18rem"}}
+      data-testid="picture"
+      alt={name}
+      src={url}
+    />
+  )
+}
+
+
+
 
 const Character = (props) => (
   <div className="card text-white bg-primary mb-3"
@@ -7,17 +54,12 @@ const Character = (props) => (
       data-testid="character">
     <div className="card-body">
       <h4 className="card-title" data-testid="name">{props.character.name}</h4>
-        <img
-          style={{maxWidth: "18rem"}}
-          data-testid="picture"
-          alt={props.character.name}
-          src={props.character.thumbnail.path+"."+props.character.thumbnail.extension}
-        />
+      <Img name={props.character.name} src={props.character.thumbnail.path+"."+props.character.thumbnail.extension} />
       <p className="card-text" data-testid="descr">{props.character.description}</p>
       <button
         className="btn btn-outline-secondary"
         data-testid="deleteButton"
-        data-id={props.character.id} 
+        data-id={props.character.id}
         onClick={props.removeCharacter}
       >
         Delete
